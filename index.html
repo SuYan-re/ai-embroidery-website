@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>"AI绣坊"——生成式AI驱动的木垒哈萨克刺绣非遗档案活化与沉浸式文旅应用创新</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+            background-color: #fdfbf5;
+            color: #382A1E;
+        }
+        .hero-bg {
+            background-color: #E9E0D2;
+        }
+        .accent-color {
+            color: #C0392B;
+        }
+        .accent-bg {
+            background-color: #C0392B;
+        }
+        .secondary-accent-color {
+            color: #F39C12;
+        }
+        .tertiary-accent-color {
+            color: #2980B9;
+        }
+        .section-title {
+            font-size: 2.25rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        .card {
+            background-color: #fff;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+        .nav-link {
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            color: #382A1E;
+            text-decoration: none;
+        }
+        .nav-link:hover, .nav-link.active {
+            background-color: #C0392B;
+            color: #fff;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 350px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .stat-card {
+            background-color: #F8F4EC;
+            border-left: 4px solid #F39C12;
+        }
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn-primary {
+            background-color: #C0392B;
+            color: #fff;
+        }
+        .btn-primary:hover {
+            background-color: #A93226;
+            transform: translateY(-2px);
+        }
+        /* 移动端导航菜单改进 */
+        .mobile-menu-enter {
+            animation: slideDown 0.3s ease-out;
+        }
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        /* 无障碍访问改进 */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <nav id="navbar" class="bg-white/80 backdrop-blur-md shadow-md sticky top-0 z-50" role="navigation" aria-label="主导航">
+        <div class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <a href="#" class="text-2xl font-bold accent-color" aria-label="AI绣坊首页">AI绣坊</a>
+            <div class="hidden md:flex space-x-4">
+                <a href="#heritage" class="nav-link">文化瑰宝</a>
+                <a href="#challenge" class="nav-link">传承困境</a>
+                <a href="#solution" class="nav-link">创新实践</a>
+                <a href="#progress" class="nav-link">项目进展</a>
+                <a href="#team" class="nav-link">团队力量</a>
+                <a href="#vision" class="nav-link">未来展望</a>
+                <a href="#contact" class="nav-link">加入我们</a>
+            </div>
+            <div class="md:hidden">
+                <button id="mobile-menu-button" class="text-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500" aria-expanded="false" aria-controls="mobile-menu" aria-label="打开移动端菜单">
+                    <span class="sr-only">打开菜单</span>
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden bg-white shadow-lg">
+            <a href="#heritage" class="block nav-link text-center py-3 border-b border-gray-100">文化瑰宝</a>
+            <a href="#challenge" class="block nav-link text-center py-3 border-b border-gray-100">传承困境</a>
+            <a href="#solution" class="block nav-link text-center py-3 border-b border-gray-100">创新实践</a>
+            <a href="#progress" class="block nav-link text-center py-3 border-b border-gray-100">项目进展</a>
+            <a href="#team" class="block nav-link text-center py-3 border-b border-gray-100">团队力量</a>
+            <a href="#vision" class="block nav-link text-center py-3 border-b border-gray-100">未来展望</a>
+            <a href="#contact" class="block nav-link text-center py-3">加入我们</a>
+        </div>
+    </nav>
+
+    <header class="hero-bg py-20 md:py-32" role="banner">
+        <div class="container mx-auto px-6 text-center">
+            <h1 class="text-4xl md:text-6xl font-bold mb-6">
+                <span class="accent-color">AI绣坊</span>：编织传统与未来的丝线
+            </h1>
+            <p class="text-lg md:text-xl mb-8 max-w-3xl mx-auto">
+                通过生成式AI与数字技术，活化木垒哈萨克刺绣这一国家级非物质文化遗产，探索文化传承与文旅创新的融合之路。
+            </p>
+            <a href="#solution" class="btn btn-primary">了解我们的方案</a>
+        </div>
+    </header>
+
+    <main role="main">
+        <section id="heritage" class="py-16 md:py-24">
+            <div class="container mx-auto px-6">
+                <h2 class="section-title"><span class="accent-color">木垒哈萨克刺绣</span>：指尖上的千年艺术</h2>
+                <div class="text-center max-w-3xl mx-auto mb-12">
+                    <p class="text-lg leading-relaxed">
+                        木垒哈萨克刺绣，源远流长，拥有超过800年的历史，是国家级非物质文化遗产的璀璨明珠。它以其鲜明的色彩（主用红、黄、蓝三原色）、精湛的"绕线挑刺"与"套针绣"技艺，以及富有象征意义的图案（如动植物纹、寓意吉祥的"八瓣花"、象征生生不息的"盘旋纹"）闻名于世。这些不仅仅是装饰，更是哈萨克族人民精神信仰、生活哲学与美学观念的生动载体，是丝绸之路文化交融的结晶。
+                    </p>
+                </div>
+                <div class="grid md:grid-cols-3 gap-8 text-center">
+                    <div class="p-6 bg-white rounded-lg shadow-lg">
+                        <span class="text-5xl secondary-accent-color mb-4 inline-block" role="img" aria-label="花纹图案">❖</span>
+                        <h3 class="text-xl font-semibold mb-2">独特图案</h3>
+                        <p>"八瓣花"象征吉祥如意，"盘旋纹"寓意生命流转，动植物图案充满自然气息。</p>
+                    </div>
+                    <div class="p-6 bg-white rounded-lg shadow-lg">
+                        <span class="text-5xl tertiary-accent-color mb-4 inline-block" role="img" aria-label="工艺技法">❉</span>
+                        <h3 class="text-xl font-semibold mb-2">精湛工艺</h3>
+                        <p>"绕线挑刺"针法细腻，"套针绣"层次丰富，展现高超的手工技艺。</p>
+                    </div>
+                    <div class="p-6 bg-white rounded-lg shadow-lg">
+                        <span class="text-5xl accent-color mb-4 inline-block" role="img" aria-label="文化融合">❊</span>
+                        <h3 class="text-xl font-semibold mb-2">文化融合</h3>
+                        <p>融合丝路文化、游牧符号及多民族艺术影响，形成独特的"木垒风格"。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="challenge" class="py-16 md:py-24 bg-gray-100">
+            <div class="container mx-auto px-6">
+                <h2 class="section-title">珍贵遗产面临的<span class="accent-color">严峻挑战</span></h2>
+                <div class="text-center max-w-3xl mx-auto mb-12">
+                     <p class="text-lg leading-relaxed">
+                        尽管木垒哈萨克刺绣拥有辉煌的历史和深厚的文化底蕴，但在现代社会飞速发展的背景下，其传承与发展面临着前所未有的困境。这些挑战不仅威胁着技艺本身的存续，也可能导致相关文化身份的弱化和经济发展机遇的流失。
+                    </p>
+                </div>
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div class="card items-center text-center">
+                        <span class="text-6xl mb-4" role="img" aria-label="传承人老龄化">👵</span>
+                        <h3 class="card-title">传承人老龄化</h3>
+                        <p>超过60%的传承人年逾65岁，年轻一代学习意愿不高，技艺面临失传风险。</p>
+                    </div>
+                    <div class="card items-center text-center">
+                        <span class="text-6xl mb-4" role="img" aria-label="技艺传承困难">🧩</span>
+                        <h3 class="card-title">技艺传承困难</h3>
+                        <p>传统口传心授模式效率低，复杂工艺难以标准化、系统化传授。</p>
+                    </div>
+                    <div class="card items-center text-center">
+                        <span class="text-6xl mb-4" role="img" aria-label="创新动力不足">💡</span>
+                        <h3 class="card-title">创新动力不足</h3>
+                        <p>传统图案和产品形式单一，缺乏与现代审美和市场需求的有效对接。</p>
+                    </div>
+                    <div class="card items-center text-center">
+                        <span class="text-6xl mb-4" role="img" aria-label="产业化程度低">📉</span>
+                        <h3 class="card-title">产业化程度低</h3>
+                        <p>缺乏品牌化运作和市场推广，经济价值未能充分发掘，难以形成规模效应。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="solution" class="py-16 md:py-24">
+            <div class="container mx-auto px-6">
+                <h2 class="section-title">AI绣坊的<span class="accent-color">创新实践</span></h2>
+                 <div class="text-center max-w-3xl mx-auto mb-12">
+                    <p class="text-lg leading-relaxed">
+                        面对挑战，"AI绣坊"项目应运而生。我们致力于运用生成式AI等前沿数字技术，构建一个集保护、研究、创新、教育与应用于一体的综合性平台，为木垒哈萨克刺绣的活化传承与创新发展注入新的动力。我们的实践围绕四大核心板块展开：
+                    </p>
+                </div>
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div class="card">
+                        <h3 class="card-title secondary-accent-color">① 数字档案守护</h3>
+                        <p class="flex-grow">构建"基础数字档案库"，系统化采集和保存刺绣图案、工艺及口述历史。
+                            <br> • <span class="font-semibold">"绣藏图库"</span>：高清图像与纹样数据。
+                            <br> • <span class="font-semibold">"绣史口述集"</span>：记录传承人智慧与记忆。
+                        </p>
+                    </div>
+                    <div class="card">
+                        <h3 class="card-title tertiary-accent-color">② AI辅助创新</h3>
+                        <p class="flex-grow">开发"AI辅助创作工具"，赋能传承人与设计师，激发创新灵感。
+                            <br> • <span class="font-semibold">"绣梦助手"</span>：基于Stable Diffusion等开源AI，生成保留传统风格的新图案。
+                            <br> • <span class="font-semibold">设计迭代</span>：提供图案变体、色彩搭配等辅助。
+                        </p>
+                    </div>
+                    <div class="card">
+                        <h3 class="card-title accent-color">③ 教育推广普及</h3>
+                        <p class="flex-grow">建立"低成本教学推广体系"，降低学习门槛，扩大受众群体。
+                            <br> • <span class="font-semibold">"绣艺教程库"</span>：在线视频与图文教程。
+                            <br> • <span class="font-semibold">"绣趣工作坊"</span>：线下体验与互动教学。
+                            <br> • <span class="font-semibold">"绣语小程序"</span>：便捷学习与文化传播。
+                        </p>
+                    </div>
+                    <div class="card">
+                        <h3 class="card-title" style="color: #27AE60;">④ 校地协同应用</h3>
+                        <p class="flex-grow">推动产学研用结合，促进文化资源向经济价值转化，助力地方发展。
+                            <br> • <span class="font-semibold">文创产品开发</span>：如AI辅助设计的刺绣饰品、家居用品。
+                            <br> • <span class="font-semibold">研学体验旅游</span>：结合刺绣文化打造特色文旅线路。
+                            <br> • <span class="font-semibold">社区赋能</span>：为手工艺人提供技能培训与市场对接。
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="progress" class="py-16 md:py-24 bg-gray-100">
+            <div class="container mx-auto px-6">
+                <h2 class="section-title">我们的<span class="accent-color">项目进展</span></h2>
+                <div class="text-center max-w-3xl mx-auto mb-12">
+                    <p class="text-lg leading-relaxed">
+                        自项目启动以来，"AI绣坊"团队已取得一系列阶段性成果，为后续发展奠定了坚实基础。我们坚持"小步快跑、持续迭代"的策略，将理论创新与实践应用紧密结合。
+                    </p>
+                </div>
+                <div class="grid md:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <h3 class="text-2xl font-semibold mb-6 text-center md:text-left">关键数据成果</h3>
+                        <div class="space-y-4">
+                            <div class="stat-card p-4 rounded-lg shadow">
+                                <p class="text-lg"><span class="font-bold secondary-accent-color text-2xl" id="digitized-patterns" aria-live="polite">0</span>+ 幅传统图案完成数字化采集与建档</p>
+                            </div>
+                            <div class="stat-card p-4 rounded-lg shadow">
+                                <p class="text-lg"><span class="font-bold tertiary-accent-color text-2xl" id="ai-designs" aria-live="polite">0</span>+ 种AI辅助生成的创新设计方案</p>
+                            </div>
+                            <div class="stat-card p-4 rounded-lg shadow">
+                                <p class="text-lg"><span class="font-bold accent-color text-2xl" id="workshops-conducted" aria-live="polite">0</span>+ 场"AI+刺绣"教学工作坊成功举办并验证模式</p>
+                            </div>
+                        </div>
+                         <p class="mt-6 text-md leading-relaxed">此外，我们已与木垒县文化馆建立初步合作关系，获得刺绣文化调研支持；并成功申请到学院"创新创业种子基金"3000元及创业孵化中心免费场地支持。</p>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="progressChart" aria-label="项目进展数据图表"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="team" class="py-16 md:py-24">
+            <div class="container mx-auto px-6">
+                <h2 class="section-title">驱动<span class="accent-color">我们的力量</span></h2>
+                <div class="max-w-4xl mx-auto">
+                    <div class="bg-white p-8 rounded-xl shadow-lg text-center">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Crect width='120' height='120' fill='%23E9E0D2'/%3E%3Ctext x='60' y='70' font-family='Arial' font-size='24' fill='%23382A1E' text-anchor='middle'%3E团队%3C/text%3E%3C/svg%3E" alt="团队图标" class="w-24 h-24 rounded-full mx-auto mb-6">
+                        <h3 class="text-2xl font-semibold mb-4">昌吉学院青年创客团队</h3>
+                        <p class="text-lg leading-relaxed mb-4">
+                            "AI绣坊"项目由来自昌吉学院经济与管理学院的一群充满热情与活力的学生主导。团队成员包括罗苏岩（项目负责人）、苏热亚·亚森（维吾尔族，文化研究）、田贵林、任世玉（技术负责人）等，拥有家政学等多元专业背景。我们还荣幸地邀请到高婷老师作为项目的指导教师，为我们提供专业的学术支持和实践指导。
+                        </p>
+                        <p class="text-lg leading-relaxed">
+                            团队成员中包含哈萨克族、维吾尔族等民族同学，他们对本土文化怀有深厚情感，其独特的文化视角和语言优势为项目的顺利开展、以及与传承人的有效沟通提供了坚实保障。我们致力于将所学知识应用于实践，为非物质文化遗产的保护与创新贡献青年力量。
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="vision" class="py-16 md:py-24 bg-gray-100">
+            <div class="container mx-auto px-6">
+                <h2 class="section-title">我们的<span class="accent-color">未来展望</span></h2>
+                 <div class="text-center max-w-3xl mx-auto mb-12">
+                    <p class="text-lg leading-relaxed">
+                       "AI绣坊"不仅着眼于木垒哈萨克刺绣的当前困境，更致力于探索其可持续发展的长远路径。我们相信，通过科技赋能与模式创新，能够为这项古老技艺开辟充满希望的未来。
+                    </p>
+                </div>
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="card">
+                        <h3 class="card-title secondary-accent-color">赋能传承人群体</h3>
+                        <p>通过新工具、新渠道，提升传承人创作效率与市场竞争力，预计三年内带动至少30名传统手工艺从业者增收。</p>
+                    </div>
+                    <div class="card">
+                        <h3 class="card-title tertiary-accent-color">促进文旅融合</h3>
+                        <p>开发特色文创产品与研学体验项目，丰富木垒文化旅游内涵，培育3家以上地方文创企业或合作社。</p>
+                    </div>
+                    <div class="card">
+                        <h3 class="card-title accent-color">打造示范模式</h3>
+                        <p>为边疆民族地区其他非物质文化遗产的数字化保护与创新性发展提供可复制、可推广的"AI+非遗"活化模式。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" class="py-16 md:py-24">
+            <div class="container mx-auto px-6 text-center">
+                <h2 class="section-title">加入我们，<span class="accent-color">共创未来</span></h2>
+                <p class="text-lg md:text-xl mb-8 max-w-2xl mx-auto">
+                    我们相信，每一份关注和支持都能为木垒哈萨克刺绣的传承与创新增添力量。"AI绣坊"期待与您携手，共同守护这份文化瑰宝，探索非遗活化的无限可能。
+                </p>
+                <div class="bg-white p-8 rounded-xl shadow-lg inline-block">
+                    <p class="text-lg mb-2"><strong>项目负责人：</strong>罗苏岩</p>
+                    <p class="text-lg mb-2"><strong>联系电话：</strong>156-1981-5787 （示例）</p>
+                    <p class="text-lg mb-4"><strong>电子邮箱：</strong>ai_embroidery@example.com （示例）</p>
+                    <p class="text-lg"><strong>学校：</strong>昌吉学院 经济与管理学院</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-gray-800 text-gray-300 py-8 text-center" role="contentinfo">
+        <div class="container mx-auto px-6">
+            <p>&copy; 2025 "AI绣坊"项目团队 - 昌吉学院. 保留所有权利。</p>
+            <p class="text-sm mt-2">一个致力于非物质文化遗产保护与创新的学生项目。</p>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle with improved accessibility
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        mobileMenuButton.addEventListener('click', () => {
+            const isExpanded = mobileMenuButton.getAttribute('aria-expanded') === 'true';
+            mobileMenuButton.setAttribute('aria-expanded', !isExpanded);
+            
+            if (mobileMenu.classList.contains('hidden')) {
+                mobileMenu.classList.remove('hidden');
+                mobileMenu.classList.add('mobile-menu-enter');
+            } else {
+                mobileMenu.classList.add('hidden');
+                mobileMenu.classList.remove('mobile-menu-enter');
+            }
+        });
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    // Calculate offset for fixed header
+                    const headerHeight = document.getElementById('navbar').offsetHeight;
+                    const targetPosition = targetElement.offsetTop - headerHeight - 20;
+                    
+                    window.scrollTo({
+                        top: targetPosition,
+                        behavior: 'smooth'
+                    });
+                }
+                // Close mobile menu if open
+                if (!mobileMenu.classList.contains('hidden')) {
+                    mobileMenu.classList.add('hidden');
+                    mobileMenuButton.setAttribute('aria-expanded', 'false');
+                }
+            });
+        });
+        
+        // Active navigation link highlighting with improved accuracy
+        const sections = document.querySelectorAll('section[id]');
+        const navLinks = document.querySelectorAll('nav a.nav-link');
+
+        function updateActiveNavLink() {
+            let current = '';
+            const headerHeight = document.getElementById('navbar').offsetHeight;
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - headerHeight - 50;
+                const sectionBottom = sectionTop + section.offsetHeight;
+                
+                if (window.pageYOffset >= sectionTop && window.pageYOffset < sectionBottom) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').substring(1) === current) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        // Throttle scroll event for better performance
+        let ticking = false;
+        function requestTick() {
+            if (!ticking) {
+                requestAnimationFrame(updateActiveNavLink);
+                ticking = true;
+            }
+        }
+
+        window.addEventListener('scroll', () => {
+            requestTick();
+            ticking = false;
+        });
+
+        // Progress Chart with error handling
+        function initializeChart() {
+            const canvas = document.getElementById('progressChart');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            const progressChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['数字化图案', 'AI创新设计', '教学工作坊'],
+                    datasets: [{
+                        label: '项目成果数量',
+                        data: [0, 0, 0],
+                        backgroundColor: [
+                            'rgba(243, 156, 18, 0.7)',
+                            'rgba(41, 128, 185, 0.7)',
+                            'rgba(192, 57, 43, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(243, 156, 18, 1)',
+                            'rgba(41, 128, 185, 1)',
+                            'rgba(192, 57, 43, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false 
+                        },
+                        tooltip: {
+                            enabled: true,
+                            callbacks: {
+                                title: function(tooltipItems) {
+                                    return tooltipItems[0].label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 10
+                            }
+                        }
+                    }
+                }
+            });
+            
+            return progressChart;
+        }
+        
+        // Improved animation function with error handling
+        function animateValue(id, start, end, duration, chart = null, chartIndex = 0) {
+            let startTimestamp = null;
+            const element = id ? document.getElementById(id) : null;
+            
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                const currentValue = Math.floor(progress * (end - start) + start);
+                
+                if (chart && chart.data && chart.data.datasets[0]) {
+                    chart.data.datasets[0].data[chartIndex] = currentValue;
+                    chart.update('none');
+                }
+                
+                if (element) {
+                    element.textContent = currentValue;
+                }
+                
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                } else {
+                    // Ensure final values are set
+                    if (chart && chart.data && chart.data.datasets[0]) {
+                        chart.data.datasets[0].data[chartIndex] = end;
+                        chart.update('none');
+                    }
+                    if (element) {
+                        element.textContent = end;
+                    }
+                }
+            };
+            window.requestAnimationFrame(step);
+        }
+
+        // Initialize everything when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            const progressChart = initializeChart();
+            const progressSection = document.getElementById('progress');
+            let animationDone = false;
+
+            if (progressSection && progressChart) {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting && !animationDone) {
+                            // Animate counters
+                            animateValue('digitized-patterns', 0, 50, 1500);
+                            animateValue('ai-designs', 0, 30, 1500);
+                            animateValue('workshops-conducted', 0, 3, 1500);
+
+                            // Animate chart
+                            animateValue(null, 0, 50, 1500, progressChart, 0);
+                            animateValue(null, 0, 30, 1500, progressChart, 1);
+                            animateValue(null, 0, 3, 1500, progressChart, 2);
+
+                            animationDone = true;
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                }, { threshold: 0.3 });
+
+                observer.observe(progressSection);
+            }
+            
+            // Set initial active nav link
+            updateActiveNavLink();
+        });
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!mobileMenuButton.contains(e.target) && !mobileMenu.contains(e.target)) {
+                if (!mobileMenu.classList.contains('hidden')) {
+                    mobileMenu.classList.add('hidden');
+                    mobileMenuButton.setAttribute('aria-expanded', 'false');
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>
